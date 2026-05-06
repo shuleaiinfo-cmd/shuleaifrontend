@@ -4,7 +4,7 @@
   const $ = (id) => document.getElementById(id);
   const toast = (m,t='info') => (w.showToast ? w.showToast(m,t) : console.log(`[${t}]`, m));
   const esc = (s='') => String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-  const currentUser = () => { try { return w.getCurrentUser ? w.getCurrentUser() : JSON.parse(localStorage.getItem('currentUser') || '{}'); } catch { return {}; } };
+  const currentUser = () => { try { return (w.getCurrentUser ? w.getCurrentUser() : JSON.parse(localStorage.getItem('currentUser') || localStorage.getItem('user') || '{}')) || {}; } catch { return {}; } };
 
   // ---------- Curriculum metadata ----------
   w.v17LoadSchoolCurriculum = async function(){
@@ -38,7 +38,7 @@
   w.v16RefreshTeacherDutyCard = w.v17RefreshTeacherDutyCard = async function(){
     const user = currentUser();
     const card = $('duty-card');
-    if (!card || user.role !== 'teacher') return;
+    if (!card || user?.role !== 'teacher') return;
     const locationEl = $('duty-location'), statusEl = $('duty-status'), inBtn = $('check-in-btn'), outBtn = $('check-out-btn');
     try {
       const res = await w.api.duty.getTodayDuty();
@@ -149,7 +149,7 @@
     const list = packs[role] || packs.admin;
     return `<div class="space-y-6"><div class="rounded-2xl border bg-card p-6"><p class="text-xs uppercase text-muted-foreground">Help Centre</p><h2 class="text-2xl font-bold">${esc(role.replace('_',' '))} guide</h2><p class="text-muted-foreground mt-2">Practical help for the live school operations system.</p></div><div class="grid gap-4 md:grid-cols-2">${list.map((x,i)=>`<article class="rounded-xl border bg-card p-5"><h3 class="font-bold mb-2">${i+1}. ${esc(x)}</h3><p class="text-sm text-muted-foreground">Open the related dashboard section, confirm the selected school/class/child, then complete the action. The system uses real school data and respects role permissions.</p></article>`).join('')}</div><div class="rounded-xl border bg-card p-5"><h3 class="font-bold">Need support?</h3><p class="text-sm text-muted-foreground">Check your login role, school code, selected class, and whether the feature is admin-only. Real money collection is intentionally disabled in this build.</p></div></div>`;
   };
-  w.renderHelpSection = function(role){ return helpHTML(role || currentUser().role || 'admin'); };
+  w.renderHelpSection = function(role){ const user = currentUser(); return helpHTML(role || user?.role || 'admin'); };
 
   // ---------- Demo route: real-looking full demo with local demo data and no payments ----------
   const demoUsers = {
@@ -190,6 +190,6 @@
   document.head.appendChild(css);
 
   document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => { if (currentUser().role === 'teacher') w.v17RefreshTeacherDutyCard?.(); }, 900);
+    setTimeout(() => { const user = currentUser(); if (user?.role === 'teacher') w.v17RefreshTeacherDutyCard?.(); }, 900);
   });
 })();

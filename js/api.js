@@ -1,5 +1,11 @@
 // API Configuration
-const API_BASE_URL = (localStorage.getItem('SHULE_API_BASE_URL') || 'https://shuleaibackend-32h1.onrender.com').replace(/\/$/, '');
+const SHULE_OFFICIAL_API_BASE_URL = 'https://shule-ai-backend.onrender.com';
+const cachedApiBaseUrl = localStorage.getItem('SHULE_API_BASE_URL');
+if (!cachedApiBaseUrl || cachedApiBaseUrl.includes('shuleaibackend-32h1')) {
+    localStorage.setItem('SHULE_API_BASE_URL', SHULE_OFFICIAL_API_BASE_URL);
+}
+const API_BASE_URL = (localStorage.getItem('SHULE_API_BASE_URL') || SHULE_OFFICIAL_API_BASE_URL).replace(/\/$/, '');
+window.API_BASE_URL = API_BASE_URL;
 
 // Token management
 let authToken = localStorage.getItem('authToken');

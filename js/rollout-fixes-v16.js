@@ -142,7 +142,7 @@
   // 8) Demo route from pricing free trial. Uses real app shell with demo credentials/data isolation flag.
   w.openFullSystemDemo = function(){
     localStorage.setItem('SHULE_DEMO_MODE','true');
-    localStorage.setItem('SHULE_API_BASE_URL', localStorage.getItem('SHULE_API_BASE_URL') || 'https://shuleaibackend-32h1.onrender.com');
+    localStorage.setItem('SHULE_API_BASE_URL', 'https://shule-ai-backend.onrender.com');
     if (typeof w.openAuthModal === 'function') {
       toast('Opening full system demo. Use the demo accounts shown in the login panel.', 'info');
       w.openAuthModal('admin','login');

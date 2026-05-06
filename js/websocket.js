@@ -32,7 +32,8 @@ function connectWebSocket() {
     }
     
     // Connect to Socket.io server
-    socket = io('https://shuleaibackend-32h1.onrender.com', {
+    const socketBaseUrl = (window.API_BASE_URL || localStorage.getItem('SHULE_API_BASE_URL') || 'https://shule-ai-backend.onrender.com').replace(/\/$/, '');
+    socket = io(socketBaseUrl, {
         auth: { token },
         transports: ['websocket', 'polling'],
         reconnection: true,
